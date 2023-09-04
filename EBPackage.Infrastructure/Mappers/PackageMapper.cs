@@ -14,8 +14,7 @@ namespace EBPackage.Infrastructure.Mappers
                 Weight = packageRequest.Weight,
                 Length = packageRequest.Length,
                 Height = packageRequest.Height,
-                Width = packageRequest.Width,
-                IsValid = packageRequest.IsValid
+                Width = packageRequest.Width
             };
         }
     }

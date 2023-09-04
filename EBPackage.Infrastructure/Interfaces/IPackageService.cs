@@ -6,7 +6,7 @@ namespace EBPackage.Infrastructure.Interfaces
     public interface IPackageService
     {
         List<Package> GetAllPackages();
-        Package GetPackageByKolliId(string kolliId);
+        Package? GetPackageByKolliId(string kolliId);
         void AddPackage(PackageRequest packageRequest);
     }
 }

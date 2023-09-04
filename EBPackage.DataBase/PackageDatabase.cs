@@ -8,30 +8,35 @@ namespace EBPackage.Database
         {
             new Package()
             {
-                Width = 200,
-                Length = 200,
-                Height = 200,
-                Weight = 200,
-                KolliId = "99912345678912341",
-                IsValid = true,
+                Width = 15,
+                Length = 18,
+                Height = 16,
+                Weight = 1999,
+                KolliId = "999123456789123451",
             },
             new Package()
             {
-                Width =  3100,
-                Length = 3100,
-                Height = 3100,
-                Weight = 3100,
-                KolliId = "99912345678912342",
-                IsValid = false,
+                Width =  10,
+                Length = 10,
+                Height = 10,
+                Weight = 1000,
+                KolliId = "999123456789123452",
+            },
+            new Package()
+            {
+                Width =  22,
+                Length = 33,
+                Height = 44,
+                Weight = 5555,
+                KolliId = "999123456789123453",
             },
             new Package()
             {
                 Width =  100,
                 Length = 100,
                 Height = 100,
-                Weight = 100,
-                KolliId = "99912345678912343",
-                IsValid = true,
+                Weight = 3000,
+                KolliId = "999123456789123454",
             }
         };
 
@@ -45,9 +50,14 @@ namespace EBPackage.Database
             return packages;
         }
 
-        public static Package GetPackageByKolliId(string kolliId)
+        public static Package? GetPackageByKolliId(string kolliId)
         {
             return packages.FirstOrDefault(p => p.KolliId == kolliId);
+        }
+
+        public static bool PackagesAlreadyExists(string kolliId)
+        {
+            return GetPackageByKolliId(kolliId) != null;
         }
     }
 }
