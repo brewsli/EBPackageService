@@ -1,4 +1,5 @@
-﻿using EBPackage.Entities.DataContract.Requests;
+﻿using EBPackage.Entities.DataContract.Models;
+using EBPackage.Entities.DataContract.Requests;
 using EBPackage.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,21 +16,34 @@ namespace EBPackage.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<string>> Get()
+        public ActionResult<List<Package>> Get()
         {
-            return new List<string>() { "Package 1", "Package 2" };
+            return packageService.GetAllPackages();
         }
 
         [HttpGet("{kolliId}")]
-        public ActionResult<string> Get(string kolliId)
+        public ActionResult<Package> Get(string kolliId)
         {
-            return "Package 1";
+            return packageService.GetPackageByKolliId(kolliId);
         }
 
         [HttpPost]
-        public void Post([FromBody] PackageRequest packageRequest)
+        public ActionResult Post([FromBody] PackageRequest packageRequest)
         {
-
+            try
+            {
+                packageRequest.Validate();
+                packageService.AddPackage(packageRequest);
+                if (!packageRequest.IsValid)
+                {
+                    return UnprocessableEntity("The package size exceeds the limitations");
+                }
+            }
+            catch (Exception e)
+            {
+                return UnprocessableEntity(e.Message);
+            }
+            return Ok();
         }
     }
 }

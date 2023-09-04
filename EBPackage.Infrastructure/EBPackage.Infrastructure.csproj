@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EBPackage.DataBase\EBPackage.Database.csproj" />
+    <ProjectReference Include="..\EBPackage.Entities\EBPackage.Entities.csproj" />
+  </ItemGroup>
+
 </Project>
