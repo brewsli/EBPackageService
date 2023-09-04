@@ -1,5 +1,6 @@
 ﻿using EBPackage.Entities.DataContract.Models;
 using EBPackage.Entities.DataContract.Requests;
+using EBPackage.Entities.Exceptions;
 using EBPackage.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,9 +23,20 @@ namespace EBPackage.Api.Controllers
         }
 
         [HttpGet("{kolliId}")]
-        public ActionResult<Package> Get(string kolliId)
+        public ActionResult<Package?> Get(string kolliId)
         {
-            return packageService.GetPackageByKolliId(kolliId);
+            try
+            {
+                return packageService.GetPackageByKolliId(kolliId);
+            }
+            catch (WongInputException e)
+            {
+                return UnprocessableEntity(e.ToString());
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "An unexpected error occured: " + e.ToString());
+            }
         }
 
         [HttpPost]
@@ -32,18 +44,21 @@ namespace EBPackage.Api.Controllers
         {
             try
             {
-                packageRequest.Validate();
                 packageService.AddPackage(packageRequest);
                 if (!packageRequest.IsValid)
                 {
                     return UnprocessableEntity("The package size exceeds the limitations");
                 }
             }
+            catch (WongInputException e)
+            {
+                return UnprocessableEntity(e.ToString());
+            }
             catch (Exception e)
             {
-                return UnprocessableEntity(e.Message);
+                return StatusCode(500, "An unexpected error occured: " + e.ToString());
             }
-            return Ok();
+            return Ok("Package added successfully");
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using EBPackage.Database;
 using EBPackage.Entities.DataContract.Models;
 using EBPackage.Entities.DataContract.Requests;
+using EBPackage.Entities.Exceptions;
 using EBPackage.Infrastructure.Interfaces;
+using EBPackage.Infrastructure.Validators;
 
 namespace EBPackage.Infrastructure.Services
 {
@@ -13,20 +15,28 @@ namespace EBPackage.Infrastructure.Services
             this.packageMapper = packageMapper;
         }
 
-        public void AddPackage(PackageRequest packageRequest)
-        {
-            var package = packageMapper.Create(packageRequest);
-            PackageDatabase.AddPackage(package);
-        }
-
         public List<Package> GetAllPackages()
         {
             return PackageDatabase.GetAllPackages();
         }
 
-        public Package GetPackageByKolliId(string kolliId)
+        public Package? GetPackageByKolliId(string kolliId)
         {
-            return PackageDatabase.GetPackageByKolliId(kolliId);
+            kolliId.Validate();
+            var package = PackageDatabase.GetPackageByKolliId(kolliId);
+            return package == null ? throw new WongInputException($"Package with {kolliId} does not exist") : package;
+        }
+
+        public void AddPackage(PackageRequest packageRequest)
+        {
+            packageRequest.Validate();
+            if (PackageDatabase.PackagesAlreadyExists(packageRequest.KolliId))
+            {
+                throw new WongInputException($"Package with {packageRequest.KolliId} already exists");
+            }
+
+            var package = packageMapper.Create(packageRequest);
+            PackageDatabase.AddPackage(package);
         }
     }
 }
